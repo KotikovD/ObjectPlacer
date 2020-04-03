@@ -1,3 +1,12 @@
-[Oo]bjectPlacer/**
-!/[Ee]ditor/**
+[Aa]ssets/Materials/
+[Aa]ssets/Resources/
+[Aa]ssets/Scenes/
+[Aa]ssets/**/*.meta
+
+[Ll]ibrary/
+[Ll]ogs/
+[Pp]ackages/
+[Pp]rojectSettings/
+[Tt]emp/
+
 .DS_Store
