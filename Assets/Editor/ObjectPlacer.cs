@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
@@ -26,6 +27,7 @@ namespace ObjectPlacer
         private int _totalObjectsCount = 1;
         private int _maxDistance = 50;
         private bool _randomRotation = true;
+        private bool _isNavMeshAlert = true;
 
         #endregion
 
@@ -77,12 +79,20 @@ namespace ObjectPlacer
                 GUILayout.Space(10);
             }
 
+            if (!_isNavMeshAlert)
+            {
+                GUIStyle style = new GUIStyle();
+                style.richText = true;
+                style.alignment = TextAnchor.MiddleCenter;
+                GUILayout.Label("<color=red>Before needs to bake NavMesh</color>", style);
+            }
+                
             GUILayout.Space(20);
             if (GUILayout.Button("Place"))
                 CreateObjects();
 
             GUILayout.Space(10);
-            if (GUILayout.Button("Remove all objects"))
+            if (GUILayout.Button("Remove all"))
                 RemoveAllObjects();
 
             EditorGUILayout.EndScrollView();
@@ -95,6 +105,9 @@ namespace ObjectPlacer
 
         private void CreateObjects()
         {
+            _isNavMeshAlert = CheckNavMesh();
+            if (!_isNavMeshAlert) return;
+
             _parentGO = GameObject.Find("CreatedObjects");
             if (_parentGO == null)
                 _parentGO = new GameObject { name = "CreatedObjects" };
@@ -102,6 +115,8 @@ namespace ObjectPlacer
             for (int i = 0; i < _totalObjectsCount; i++)
             {
                 var block = _dataBlocks[i];
+                if (block.GameObj == null) continue;
+
                 for (int b = 0; b < block.How;)
                 {
                     Vector3 point = _objects.Count == 0 ? default : _objects[_objects.Count - 1].gameObject.transform.position;
@@ -132,6 +147,27 @@ namespace ObjectPlacer
                 }
             }
             FinishPlacing();
+        }
+
+        /// <summary>
+        /// Checks baked or not NavMesh map in project.
+        /// </summary>
+        private bool CheckNavMesh()
+        {
+            var path = Environment.CurrentDirectory;
+            var dirictories = Directory.GetDirectories(path);
+
+            foreach (var dirName in dirictories)
+            {
+                var assetsFolder = Path.GetFileName(dirName);
+                if (assetsFolder.Equals("Assets"))
+                {
+                    string[] navMeshFiles = Directory.GetFiles(dirName, "NavMesh.asset", SearchOption.AllDirectories);
+                    bool result = navMeshFiles.Length == 0 ? false : true;
+                    return result;
+                }
+            }
+            return false;
         }
 
         /// <summary>
@@ -193,6 +229,7 @@ namespace ObjectPlacer
 
             foreach (var block in _dataBlocks)
             {
+                if (block.GameObj == null) continue;
                 if (block.WasBoxCollidder) continue;
 
                 for (int i = 0; i < _objects.Count; i++)
