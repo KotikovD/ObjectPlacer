@@ -16,3 +16,4 @@ Copy ObjectPlacer.cs file from repository to your project in /Assets/Editor fold
 
 ## Recommendations
 - If you place objects several times in a row, the items may intersect. It is better to immediately set the required amount for each object.
+- If you want the Object placer to no longer affect the created objects, just rename the parent "CreatedObjects" in Hierarchy to any other name.
