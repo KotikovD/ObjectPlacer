@@ -7,6 +7,7 @@ This is a tool for Unity3D editor helps fast to place some objects while you pro
 Copy ObjectPlacer.cs file from repository to your project in /Assets/Editor folder. (Attention: Place script necessarily in Editor folder)
 
 ## How to use
+- Look video [https://youtu.be/pCCqKIHqfAU](https://youtu.be/pCCqKIHqfAU)
 - Bake NavMesh map
 - Open Object placer in Unity menu Tools/Object Placer
 - Add prefabs or game objects from scene to fields, set how much each object you need
